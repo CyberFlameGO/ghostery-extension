@@ -100,24 +100,6 @@ function updateDBs() {
 
 			c2pDb.update(data.click2play);
 			compDb.update(data.compatibility);
-			bugDb.update(data.bugs, (result) => {
-				log('CHECK LIBRARY VERSION CALLED', result);
-				if (result.success) {
-					const nowTime = Date.now();
-					conf.bugs_last_checked = nowTime;
-					if (result.updated) {
-						log('BUGS LAST UPDATED UPDATED', new Date());
-						conf.bugs_last_updated = nowTime;
-					}
-				}
-				resolve({
-					...result,
-					confData: {
-						bugs_last_checked: conf.bugs_last_checked,
-						bugs_last_updated: conf.bugs_last_updated
-					}
-				});
-			});
 		}).catch((err) => {
 			log('Error in updateDBs', err);
 			reject(failed);
@@ -1504,7 +1486,7 @@ function initializeGhosteryModules() {
 	metrics.ping('active');
 	// initialize all tracker and surrogate DBs in parallel with Promise.all
 	return Promise.all([
-		bugDb.init(globals.JUST_UPGRADED),
+		bugDb.init(),
 		c2pDb.init(globals.JUST_UPGRADED),
 		compDb.init(globals.JUST_UPGRADED),
 		surrogatedb.init(globals.JUST_UPGRADED),
