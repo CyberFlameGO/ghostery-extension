@@ -44,19 +44,31 @@ class BugDb {
 		}), {});
 
 		engine.metadata.getPatterns().forEach((pattern) => {
+			const id = String(pattern.ghostery_id);
+
 			categoriesMeta[pattern.category].trackers.push({
-				id: String(pattern.ghostery_id),
+				id,
 				name: pattern.name,
 				description: '',
-				blocked: selectedApps.hasOwnProperty(pattern.ghostery_id),
+				blocked: selectedApps.hasOwnProperty(id),
 				shouldShow: true,
 				catId: pattern.category,
 				trackerID: pattern.key,
 			});
 
-			if (selectedApps.hasOwnProperty(pattern.ghostery_id)) {
+			if (selectedApps.hasOwnProperty(id)) {
 				categoriesMeta[pattern.category].blockedTrackersCount += 1;
 			}
+
+			this.db.apps[id] = {
+				name: pattern.name,
+				trackerID: pattern.key,
+				cat: pattern.category,
+			};
+
+			this.db.bugs[id] = {
+				aid: id,
+			};
 		});
 
 		this.db.categories = engine.metadata.getCategories().map(({ key: category }) => ({
@@ -69,22 +81,6 @@ class BugDb {
 			num_blocked: categoriesMeta[category].blockedTrackersCount,
 			trackers: categoriesMeta[category].trackers,
 		}));
-
-		this.db.apps = engine.metadata.getPatterns().reduce((all, pattern) => ({
-			...all,
-			[String(pattern.ghostery_id)]: {
-				name: pattern.name,
-				trackerID: pattern.key,
-				cat: pattern.category,
-			},
-		}), {});
-
-		this.db.bugs = engine.metadata.getPatterns().reduce((all, pattern) => ({
-			...all,
-			[String(pattern.ghostery_id)]: {
-				aid: String(pattern.ghostery_id),
-			},
-		}), {});
 
 		this.engine = engine;
 		conf.bugs = this.db;
