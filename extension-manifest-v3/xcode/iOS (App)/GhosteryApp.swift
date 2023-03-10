@@ -51,6 +51,16 @@ struct GhosteryApp: App {
                     .sheet(isPresented: $showSheet) {
                             SafariView(url: $url)
                     }
+                    .onOpenURL { url in
+                      // used to fetch the deep link url...
+                      print("incoming url: \(url)")
+
+                      // check path of the url
+                      if url.pathComponents.contains("become-a-contributor") {
+                          // Open subscriptions page
+                          // ContentView.toggleSubscriptions() ??
+                      }
+                    }
         }
     }
 

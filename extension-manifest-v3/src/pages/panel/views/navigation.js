@@ -14,6 +14,11 @@ import { html, msg, router, store } from 'hybrids';
 import Session from '/store/session.js';
 
 const MENU = [
+  {
+    icon: 'heart',
+    label: msg`Become a Contributor`,
+    href: 'https://www.ghostery.com/become-a-contributor',
+  },
   {},
   {
     icon: 'alert',
@@ -42,14 +47,6 @@ const MENU = [
     href: 'https://www.ghostery.com/',
   },
 ];
-
-if (__PLATFORM__ !== 'safari') {
-  MENU.unshift({
-    icon: 'heart',
-    label: msg`Become a Contributor`,
-    href: 'https://www.ghostery.com/become-a-contributor',
-  });
-}
 
 export default {
   session: store(Session),
